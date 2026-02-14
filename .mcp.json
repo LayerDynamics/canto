@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mcp-skills": {
+      "command": "node",
+      "args": ["/Users/ryanoboyle/mcp-skills/dist/index.js"]
+    }
+  }
+}
