@@ -118,14 +118,39 @@ export interface ConflictEntry {
 }
 
 // ─── Scaffold Plugin Input ───
-const ToolParameterSchema = z.object({
+const BaseToolParameterSchema = z.object({
   name: z.string().describe("Parameter name"),
-  type: z.enum(["string", "number", "boolean", "enum"]).describe("Parameter type"),
   description: z.string().describe("What this parameter does"),
   required: z.boolean().default(true).describe("Whether this parameter is required"),
-  enumValues: z.array(z.string()).optional().describe("Allowed values if type is enum"),
+});
+
+const StringToolParameterSchema = BaseToolParameterSchema.extend({
+  type: z.literal("string").describe("Parameter type"),
   defaultValue: z.string().optional().describe("Default value"),
 });
+
+const NumberToolParameterSchema = BaseToolParameterSchema.extend({
+  type: z.literal("number").describe("Parameter type"),
+  defaultValue: z.number().optional().describe("Default value"),
+});
+
+const BooleanToolParameterSchema = BaseToolParameterSchema.extend({
+  type: z.literal("boolean").describe("Parameter type"),
+  defaultValue: z.boolean().optional().describe("Default value"),
+});
+
+const EnumToolParameterSchema = BaseToolParameterSchema.extend({
+  type: z.literal("enum").describe("Parameter type"),
+  enumValues: z.array(z.string()).describe("Allowed values if type is enum"),
+  defaultValue: z.string().optional().describe("Default value (must be one of enumValues)"),
+});
+
+const ToolParameterSchema = z.discriminatedUnion("type", [
+  StringToolParameterSchema,
+  NumberToolParameterSchema,
+  BooleanToolParameterSchema,
+  EnumToolParameterSchema,
+]);
 
 const McpToolSchema = z.object({
   name: z.string().describe("Tool name (snake_case)"),
@@ -170,7 +195,7 @@ const HookEntrySchema = z.object({
   type: z.enum(["command", "prompt"]).default("command").describe("Hook type: command (shell script) or prompt (LLM evaluation)"),
   command: z.string().optional().describe("Shell command to run (for type: command)"),
   prompt: z.string().optional().describe("LLM evaluation prompt (for type: prompt)"),
-  timeout: z.number().default(60).describe("Timeout in seconds (default 60 for command, 30 for prompt)"),
+  timeout: z.number().default(60).describe("Timeout in seconds"),
   async: z.boolean().optional().describe("Run hook asynchronously"),
 });
 

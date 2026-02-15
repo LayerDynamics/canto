@@ -1,19 +1,20 @@
 import { z } from "zod";
 import { SkillComponentSchema } from "../types.js";
 import type { GeneratedFile } from "../types.js";
+import { appendYamlField } from "../utils/yaml.js";
 
 type SkillInput = z.infer<typeof SkillComponentSchema>;
 
 export function generateSkill(skill: SkillInput): GeneratedFile {
-  const frontmatter = [
-    "---",
-    `name: ${skill.name}`,
-    `description: ${skill.description}`,
-    `version: ${skill.version}`,
-    "---",
-  ].join("\n");
+  const frontmatterLines: string[] = ["---"];
 
-  const content = `${frontmatter}\n\n${skill.content}\n`;
+  appendYamlField(frontmatterLines, "name", skill.name);
+  appendYamlField(frontmatterLines, "description", skill.description);
+  appendYamlField(frontmatterLines, "version", skill.version);
+
+  frontmatterLines.push("---");
+
+  const content = `${frontmatterLines.join("\n")}\n\n${skill.content}\n`;
 
   return {
     relativePath: `skills/${skill.name}/SKILL.md`,

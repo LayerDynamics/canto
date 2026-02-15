@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What is Canto
 
-Canto is an MCP server that is also an MCP generator. A user tells the LLM what they need — a custom plugin, MCP server, skill, or any combination. The LLM queries Canto with those requirements in the format the server accepts. Canto scaffolds the files and premakes the structure so it works universally. The LLM then makes further queries to refine and tailor the output based on the user's specific request, and outputs the finished skill, MCP, or plugin to the desired location.
+Canto is an MCP server that is also an MCP generator. A user tells the LLM what they need — a custom plugin, MCP server, skill, or any combination. The LLM queries Canto with those requirements in the format the server accepts. Canto scaffolds the files and prepares the structure so it works universally. The LLM then makes further queries to refine and tailor the output based on the user's specific request, and outputs the finished skill, MCP, or plugin to the desired location.
 
 Generated MCPs will always need to be configured for the specific task, but the scaffolded structure is complete and functional.
 
@@ -63,7 +63,7 @@ src/
 
 ### Data flow
 
-Every read tool: **handler → `readInstalledPlugins()` → reader(s) → filter/format → JSON response**. No caching; filesystem read fresh each call.
+Every read tool: **handler → `readInstalledPlugins()` → reader(s) → filter/format → JSON response**. No caching; the filesystem is read fresh on each call.
 
 ### Key filesystem paths
 

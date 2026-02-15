@@ -11,7 +11,7 @@ function toSnakeCase(name: string): string {
 }
 
 function toPascalCase(name: string): string {
-  return name.split(/[-_]+/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join("");
+  return name.replace(/[^a-zA-Z0-9]+/g, " ").trim().split(/\s+/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join("");
 }
 
 function toCamelCase(name: string): string {
@@ -129,16 +129,7 @@ function zodField(param: ToolParam): string {
   }
 
   if (param.defaultValue !== undefined) {
-    let coerced: unknown = param.defaultValue;
-    switch (param.type) {
-      case "number":
-        coerced = Number(param.defaultValue);
-        break;
-      case "boolean":
-        coerced = param.defaultValue === "true" || param.defaultValue === "1";
-        break;
-    }
-    field += `.default(${JSON.stringify(coerced)})`;
+    field += `.default(${JSON.stringify(param.defaultValue)})`;
   }
 
   field += `.describe(${JSON.stringify(param.description)})`;

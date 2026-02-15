@@ -1,21 +1,24 @@
 import { z } from "zod";
 import { CommandComponentSchema } from "../types.js";
 import type { GeneratedFile } from "../types.js";
+import { appendYamlField, escapeYamlString } from "../utils/yaml.js";
 
 type CommandInput = z.infer<typeof CommandComponentSchema>;
 
 export function generateCommand(command: CommandInput): GeneratedFile {
-  const frontmatterLines = [
-    "---",
-    `description: ${command.description}`,
-  ];
+  const frontmatterLines: string[] = ["---"];
+
+  appendYamlField(frontmatterLines, "description", command.description);
 
   if (command.argumentHint) {
-    frontmatterLines.push(`argument-hint: ${command.argumentHint}`);
+    appendYamlField(frontmatterLines, "argument-hint", command.argumentHint);
   }
 
   if (command.allowedTools && command.allowedTools.length > 0) {
-    frontmatterLines.push(`allowed-tools: [${command.allowedTools.join(", ")}]`);
+    const quotedTools = command.allowedTools.map((tool) =>
+      `"${escapeYamlString(tool)}"`
+    );
+    frontmatterLines.push(`allowed-tools: [${quotedTools.join(", ")}]`);
   }
 
   if (command.model) {
