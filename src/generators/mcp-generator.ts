@@ -129,7 +129,16 @@ function zodField(param: ToolParam): string {
   }
 
   if (param.defaultValue !== undefined) {
-    field += `.default(${JSON.stringify(param.defaultValue)})`;
+    let coerced: unknown = param.defaultValue;
+    switch (param.type) {
+      case "number":
+        coerced = Number(param.defaultValue);
+        break;
+      case "boolean":
+        coerced = param.defaultValue === "true" || param.defaultValue === "1";
+        break;
+    }
+    field += `.default(${JSON.stringify(coerced)})`;
   }
 
   field += `.describe(${JSON.stringify(param.description)})`;

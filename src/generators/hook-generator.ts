@@ -74,8 +74,8 @@ export function generateHooks(hooks: HooksInput): GeneratedFile[] {
 
     // Collect script names for command-type hooks
     for (const entry of entries) {
-      if (entry.type === "command" && entry.command) {
-        scriptNames.add(toScriptName(entry.command));
+      if (entry.type === "command") {
+        scriptNames.add(toScriptName(entry.command ?? "hook"));
       }
     }
   }
