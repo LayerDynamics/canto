@@ -1,15 +1,16 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { GetMcpDetailsInput, ListSkillsInput, GetSkillContentInput, SearchSkillsInput } from "./types.js";
+import { GetMcpDetailsInput, ListSkillsInput, GetSkillContentInput, SearchSkillsInput, ScaffoldPluginInput } from "./types.js";
 import { handleListPlugins } from "./tools/list-plugins.js";
 import { handleListMcps } from "./tools/list-mcps.js";
 import { handleGetMcpDetails } from "./tools/get-mcp-details.js";
 import { handleListSkills } from "./tools/list-skills.js";
 import { handleGetSkillContent } from "./tools/get-skill-content.js";
 import { handleSearchSkills } from "./tools/search-skills.js";
+import { handleScaffoldPlugin } from "./tools/scaffold-plugin.js";
 
 const server = new McpServer({
-  name: "mcp-skills",
+  name: "canto",
   version: "1.0.0",
 });
 
@@ -53,6 +54,13 @@ server.tool(
   "Search skills by keyword across name, description, and content",
   SearchSkillsInput.shape,
   async (params) => handleSearchSkills(params),
+);
+
+server.tool(
+  "scaffold_plugin",
+  "Generate a complete Claude Code plugin with any combination of components (MCP server, skills, commands, agents, hooks). Outputs working, scaffolded structures ready for use. Checks for naming conflicts before generating.",
+  ScaffoldPluginInput.shape,
+  async (params) => handleScaffoldPlugin(params),
 );
 
 const transport = new StdioServerTransport();
